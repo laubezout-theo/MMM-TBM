@@ -6,27 +6,31 @@
 
 .station-title {
   font-weight: bold;
-  margin-bottom: 4px;
+  font-size: 1.4em;
+  margin-bottom: 6px;
+  color: #fff;
 }
 
 .departure-line {
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   font-size: 14px;
+  color: #fff;
 }
 
 .line-badge {
   color: white;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 1.4em;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  min-width: 22px;
-  height: 22px;
-  margin-right: 8px;
+  min-width: 34px;
+  height: 34px;
+  margin-right: 10px;
   text-transform: uppercase;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .circle {
@@ -39,11 +43,16 @@
 
 .terminus {
   flex: 1;
-  font-size: 13px;
+  font-size: 1.2em;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .time {
   font-weight: bold;
-  font-size: 13px;
-  margin-left: 8px;
+  font-size: 1.2em;
+  margin-left: 10px;
+  white-space: nowrap;
 }
