@@ -7,7 +7,9 @@ Module.register("MMM-TBM", {
   },
 
   start() {
-    this.templateContent = "Chargement..."
+    this.instanceData = {
+      templateContent: "Chargement..."
+    }
     this.sendTBMRequest()
     this.scheduleUpdate()
   },
@@ -18,7 +20,7 @@ Module.register("MMM-TBM", {
 
   getDom() {
     const wrapper = document.createElement("div")
-    wrapper.innerHTML = `<b>${this.config.station_name}</b><br />${this.templateContent}`
+    wrapper.innerHTML = `<b>${this.config.station_name}</b><br />${this.instanceData.templateContent}`
     return wrapper
   },
 
@@ -37,8 +39,8 @@ Module.register("MMM-TBM", {
   },
 
   socketNotificationReceived(notification, payload) {
-    if (notification === "TBM_DATA") {
-      this.templateContent = this.formatTBMData(payload)
+    if (notification === "TBM_DATA" && this.config.station_ids.some(id => payload.station_ids.includes(id))) {
+      this.instanceData.templateContent = this.formatTBMData(payload.departures)
       this.updateDom()
     }
   },

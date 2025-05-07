@@ -46,7 +46,10 @@ module.exports = NodeHelper.create({
       const limitedDepartures = sortedDepartures.slice(0, max_per_station * station_ids.length)
 
       // Retourner les départs triés
-      this.sendSocketNotification("TBM_DATA", limitedDepartures)
+      this.sendSocketNotification("TBM_DATA", {
+        station_ids,
+        departures: limitedDepartures
+      })
     }
   },
 
