@@ -50,34 +50,46 @@ Module.register("MMM-TBM", {
 
     let html = ""
 
-    data.forEach((dep) => {
-      const isTram = dep.line.toLowerCase().includes("tram")
-      let lineLabel
+    if (this.config.station_type === "transport") {
+      // Cas pour les transports (tram/bus)
+      data.forEach((dep) => {
+        const isTram = dep.line.toLowerCase().includes("tram")
+        let lineLabel
 
-      if (isTram) {
-        lineLabel = dep.line.replace(/tram\s*/i, "").trim() // ex: "Tram C" → "C"
-      } else {
-        if (dep.line.toLowerCase() === "bus express g") {
-          lineLabel = "G" // Retourner uniquement "G" pour le bus express G
+        if (isTram) {
+          lineLabel = dep.line.replace(/tram\s*/i, "").trim() // ex: "Tram C" → "C"
         } else {
-          lineLabel = dep.line.replace(/\D/g, "") // Garder uniquement les chiffres pour les autres bus
+          if (dep.line.toLowerCase() === "bus express g") {
+            lineLabel = "G" // Retourner uniquement "G" pour le bus express G
+          } else {
+            lineLabel = dep.line.replace(/\D/g, "") // Garder uniquement les chiffres pour les autres bus
+          }
         }
-      }
 
-      const color = this.getLineColor(lineLabel, isTram)
+        const color = this.getLineColor(lineLabel, isTram)
 
-      // Calcul du temps restant
-      const currentTime = new Date().getTime()
-      const arrivalTime = new Date(dep.time).getTime()
-      const timeDiffMinutes = Math.floor((arrivalTime - currentTime) / 1000 / 60)
+        // Calcul du temps restant
+        const currentTime = new Date().getTime()
+        const arrivalTime = new Date(dep.time).getTime()
+        const timeDiffMinutes = Math.floor((arrivalTime - currentTime) / 1000 / 60)
 
-      const timeHtml = timeDiffMinutes < 1
-        ? "<span class=\"text-red\">Approche</span>"
-        : `<span>${timeDiffMinutes} min</span>`
+        const timeHtml = timeDiffMinutes < 1
+          ? "<span class=\"text-red\">Approche</span>"
+          : `<span>${timeDiffMinutes} min</span>`
 
-      const lineHtml = `<span class="line-badge ${isTram ? "circle" : "square"}" style="background-color:${color}">${lineLabel}</span>`
-      html += `<div class="departure-line">${lineHtml}<span class="terminus">${dep.terminus}</span><span class="time"><span class="clock-icon">🕒</span>${timeHtml}</span></div>`
-    })
+        const lineHtml = `<span class="line-badge ${isTram ? "circle" : "square"}" style="background-color:${color}">${lineLabel}</span>`
+        html += `<div class="departure-line">${lineHtml}<span class="terminus">${dep.terminus}</span><span class="time"><span class="clock-icon">🕒</span>${timeHtml}</span></div>`
+      })
+    } else if (this.config.station_type === "citybike") {
+      // Cas pour les vélos de ville
+      data.forEach((station) => {
+        html += `<div class="bike-station">
+                        <span class="station-name">${station.name}</span>
+                        <span class="bike-count">Vélos disponibles : ${station.bikes_available}</span>
+                        <span class="dock-count">Places libres : ${station.docks_available}</span>
+                     </div>`
+      })
+    }
 
     return html
   },

@@ -56,3 +56,19 @@
   margin-left: 10px;
   white-space: nowrap;
 }
+
+.bike-station {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.station-name {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.bike-count, .dock-count {
+  display: block;
+  margin-top: 4px;
+}
