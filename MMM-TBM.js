@@ -27,7 +27,7 @@ Module.register("MMM-TBM", {
   scheduleUpdate() {
     setInterval(() => {
       this.sendTBMRequest()
-    }, 60 * 1000)
+    }, 30 * 1000)
   },
 
   sendTBMRequest() {
