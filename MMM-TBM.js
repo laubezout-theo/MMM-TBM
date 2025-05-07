@@ -53,7 +53,19 @@ Module.register("MMM-TBM", {
     // Mélanger les départs dans l'ordre croissant de temps
     data.forEach((dep) => {
       const isTram = dep.line.toLowerCase().includes("tram")
-      const lineLabel = dep.line.replace(/tram\s*/i, "").trim() // ex: "Tram C" → "C"
+      let lineLabel
+
+      if (isTram) {
+        lineLabel = dep.line.replace(/tram\s*/i, "").trim() // ex: "Tram C" → "C"
+      } else {
+        // Si c'est un bus, traiter les cas spécifiques
+        if (dep.line.toLowerCase() === "bus express g") {
+          lineLabel = "G" // Retourner uniquement "G" pour le bus express G
+        } else {
+          lineLabel = dep.line.replace(/\D/g, "") // Garder uniquement les chiffres pour les autres bus
+        }
+      }
+
       const color = this.getLineColor(lineLabel, isTram)
 
       const lineHtml = `<span class="line-badge ${isTram ? "circle" : "square"}" style="background-color:${color}">${lineLabel}</span>`
@@ -65,73 +77,74 @@ Module.register("MMM-TBM", {
 
   getLineColor(line, isTram) {
     const tramColors = {
-      A: "#9C27B0", // Purple
-      B: "#E91E63", // Pink
-      C: "#F06292", // Light Pink
-      D: "#9575CD" // Lavender
+      A: "#802280",
+      B: "#e40242",
+      C: "#cf5197",
+      D: "#9262a3"
     }
 
     const busColors = {
-      1: "#0078B0", // Blue
-      4: "#E2001A", // Red
-      9: "#008D36", // Green
-      5: "#0078B0", // Blue
-      6: "#0078B0", // Blue
-      7: "#0078B0", // Blue
-      8: "#0078B0", // Blue
-      15: "#0078B0", // Blue
-      16: "#0078B0", // Blue
-      20: "#0078B0", // Blue
-      22: "#0078B0", // Blue
-      23: "#0078B0", // Blue
-      24: "#0078B0", // Blue
-      25: "#0078B0", // Blue
-      26: "#0078B0", // Blue
-      27: "#0078B0", // Blue
-      28: "#0078B0", // Blue
-      29: "#0078B0", // Blue
-      30: "#0078B0", // Blue
-      31: "#0078B0", // Blue
-      32: "#0078B0", // Blue
-      33: "#0078B0", // Blue
-      34: "#0078B0", // Blue
-      35: "#0078B0", // Blue
-      37: "#0078B0", // Blue
-      38: "#0078B0", // Blue
-      39: "#555555", // Gray
-      51: "#555555", // Gray
-      52: "#555555", // Gray
-      53: "#555555", // Gray
-      54: "#555555", // Gray
-      55: "#555555", // Gray
-      57: "#555555", // Gray
-      60: "#555555", // Gray
-      61: "#8BC34A", // Light Green
-      64: "#8BC34A", // Light Green
-      65: "#8BC34A", // Light Green
-      66: "#8BC34A", // Light Green
-      67: "#8BC34A", // Light Green
-      69: "#8BC34A", // Light Green
-      70: "#8BC34A", // Light Green
-      71: "#8BC34A", // Light Green
-      72: "#8BC34A", // Light Green
-      73: "#8BC34A", // Light Green
-      74: "#8BC34A", // Light Green
-      75: "#8BC34A", // Light Green
-      76: "#8BC34A", // Light Green
-      77: "#8BC34A", // Light Green
-      78: "#8BC34A", // Light Green
-      79: "#8BC34A", // Light Green
-      80: "#8BC34A", // Light Green
-      81: "#8BC34A", // Light Green
-      82: "#8BC34A", // Light Green
-      83: "#8BC34A", // Light Green
-      84: "#8BC34A", // Light Green
-      85: "#8BC34A", // Light Green
-      86: "#8BC34A", // Light Green
-      87: "#8BC34A", // Light Green
-      89: "#8BC34A", // Light Green
-      90: "#8BC34A" // Light Green
+      G: "#006686",
+      1: "#00b1eb",
+      2: "#00b1eb",
+      5: "#00b1eb",
+      6: "#00b1eb",
+      7: "#00b1eb",
+      8: "#00b1eb",
+      9: "#00b1eb",
+      15: "#00b1eb",
+      16: "#00b1eb",
+      20: "#00a98b",
+      22: "#00a98b",
+      23: "#00a98b",
+      24: "#00a98b",
+      25: "#00a98b",
+      26: "#00a98b",
+      27: "#00a98b",
+      28: "#00a98b",
+      29: "#00a98b",
+      30: "#76b82a",
+      31: "#00b1eb",
+      32: "#76b82a",
+      33: "#76b82a",
+      34: "#76b82a",
+      35: "#00b1eb",
+      37: "#76b82a",
+      38: "#76b82a",
+      39: "#00b1eb",
+      51: "#4a4a49",
+      52: "#4a4a49",
+      53: "#4a4a49",
+      54: "#4a4a49",
+      55: "#4a4a49",
+      57: "#4a4a49",
+      60: "#76b82a",
+      61: "#76b82a",
+      64: "#76b82a",
+      65: "#76b82a",
+      66: "#76b82a",
+      67: "#76b82a",
+      69: "#76b82a",
+      70: "#76b82a",
+      71: "#76b82a",
+      72: "#76b82a",
+      73: "#76b82a",
+      74: "#76b82a",
+      75: "#76b82a",
+      76: "#76b82a",
+      77: "#76b82a",
+      78: "#76b82a",
+      79: "#76b82a",
+      80: "#76b82a",
+      81: "#76b82a",
+      82: "#76b82a",
+      83: "#76b82a",
+      84: "#76b82a",
+      85: "#76b82a",
+      86: "#76b82a",
+      87: "#76b82a",
+      89: "#76b82a",
+      90: "#76b82a"
     }
 
     if (isTram) {
