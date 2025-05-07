@@ -1,64 +1,141 @@
 Module.register("MMM-TBM", {
-
   defaults: {
-    exampleContent: ""
+    station_name: "",
+    station_ids: [],
+    key_token: "",
+    max_per_station: 2
   },
 
-  /**
-   * Apply the default styles.
-   */
+  start() {
+    this.templateContent = "Chargement..."
+    this.sendTBMRequest()
+    this.scheduleUpdate()
+  },
+
   getStyles() {
     return ["template.css"]
   },
 
-  /**
-   * Pseudo-constructor for our module. Initialize stuff here.
-   */
-  start() {
-    this.templateContent = this.config.exampleContent
-
-    // set timeout for next random text
-    setInterval(() => this.addRandomText(), 3000)
-  },
-
-  /**
-   * Handle notifications received by the node helper.
-   * So we can communicate between the node helper and the module.
-   *
-   * @param {string} notification - The notification identifier.
-   * @param {any} payload - The payload data`returned by the node helper.
-   */
-  socketNotificationReceived: function (notification, payload) {
-    if (notification === "EXAMPLE_NOTIFICATION") {
-      this.templateContent = `${this.config.exampleContent} ${payload.text}`
-      this.updateDom()
-    }
-  },
-
-  /**
-   * Render the page we're on.
-   */
   getDom() {
     const wrapper = document.createElement("div")
-    wrapper.innerHTML = `<b>Title</b><br />${this.templateContent}`
-
+    wrapper.innerHTML = `<b>${this.config.station_name}</b><br />${this.templateContent}`
     return wrapper
   },
 
-  addRandomText() {
-    this.sendSocketNotification("GET_RANDOM_TEXT", { amountCharacters: 15 })
+  scheduleUpdate() {
+    setInterval(() => {
+      this.sendTBMRequest()
+    }, 60 * 1000)
   },
 
-  /**
-   * This is the place to receive notifications from other modules or the system.
-   *
-   * @param {string} notification The notification ID, it is preferred that it prefixes your module name
-   * @param {number} payload the payload type.
-   */
-  notificationReceived(notification, payload) {
-    if (notification === "TEMPLATE_RANDOM_TEXT") {
-      this.templateContent = `${this.config.exampleContent} ${payload}`
+  sendTBMRequest() {
+    this.sendSocketNotification("GET_TBM_DATA", {
+      station_ids: this.config.station_ids,
+      key_token: this.config.key_token,
+      max_per_station: this.config.max_per_station
+    })
+  },
+
+  socketNotificationReceived(notification, payload) {
+    if (notification === "TBM_DATA") {
+      this.templateContent = this.formatTBMData(payload)
       this.updateDom()
     }
+  },
+
+  formatTBMData(data) {
+    if (!data || data.length === 0) return "Aucune donnée disponible."
+
+    let html = ""
+
+    // Mélanger les départs dans l'ordre croissant de temps
+    data.forEach((dep) => {
+      const isTram = dep.line.toLowerCase().includes("tram")
+      const lineLabel = dep.line.replace(/tram\s*/i, "").trim() // ex: "Tram C" → "C"
+      const color = this.getLineColor(lineLabel, isTram)
+
+      const lineHtml = `<span class="line-badge ${isTram ? "circle" : "square"}" style="background-color:${color}">${lineLabel}</span>`
+      html += `<div class="departure-line">${lineHtml}<span class="terminus">${dep.terminus}</span><span class="time">${dep.arrival_time}</span></div>`
+    })
+
+    return html
+  },
+
+  getLineColor(line, isTram) {
+    const tramColors = {
+      A: "#9C27B0", // Purple
+      B: "#E91E63", // Pink
+      C: "#F06292", // Light Pink
+      D: "#9575CD" // Lavender
+    }
+
+    const busColors = {
+      1: "#0078B0", // Blue
+      4: "#E2001A", // Red
+      9: "#008D36", // Green
+      5: "#0078B0", // Blue
+      6: "#0078B0", // Blue
+      7: "#0078B0", // Blue
+      8: "#0078B0", // Blue
+      15: "#0078B0", // Blue
+      16: "#0078B0", // Blue
+      20: "#0078B0", // Blue
+      22: "#0078B0", // Blue
+      23: "#0078B0", // Blue
+      24: "#0078B0", // Blue
+      25: "#0078B0", // Blue
+      26: "#0078B0", // Blue
+      27: "#0078B0", // Blue
+      28: "#0078B0", // Blue
+      29: "#0078B0", // Blue
+      30: "#0078B0", // Blue
+      31: "#0078B0", // Blue
+      32: "#0078B0", // Blue
+      33: "#0078B0", // Blue
+      34: "#0078B0", // Blue
+      35: "#0078B0", // Blue
+      37: "#0078B0", // Blue
+      38: "#0078B0", // Blue
+      39: "#555555", // Gray
+      51: "#555555", // Gray
+      52: "#555555", // Gray
+      53: "#555555", // Gray
+      54: "#555555", // Gray
+      55: "#555555", // Gray
+      57: "#555555", // Gray
+      60: "#555555", // Gray
+      61: "#8BC34A", // Light Green
+      64: "#8BC34A", // Light Green
+      65: "#8BC34A", // Light Green
+      66: "#8BC34A", // Light Green
+      67: "#8BC34A", // Light Green
+      69: "#8BC34A", // Light Green
+      70: "#8BC34A", // Light Green
+      71: "#8BC34A", // Light Green
+      72: "#8BC34A", // Light Green
+      73: "#8BC34A", // Light Green
+      74: "#8BC34A", // Light Green
+      75: "#8BC34A", // Light Green
+      76: "#8BC34A", // Light Green
+      77: "#8BC34A", // Light Green
+      78: "#8BC34A", // Light Green
+      79: "#8BC34A", // Light Green
+      80: "#8BC34A", // Light Green
+      81: "#8BC34A", // Light Green
+      82: "#8BC34A", // Light Green
+      83: "#8BC34A", // Light Green
+      84: "#8BC34A", // Light Green
+      85: "#8BC34A", // Light Green
+      86: "#8BC34A", // Light Green
+      87: "#8BC34A", // Light Green
+      89: "#8BC34A", // Light Green
+      90: "#8BC34A" // Light Green
+    }
+
+    if (isTram) {
+      return tramColors[line.toUpperCase()] || "#555"
+    }
+
+    return busColors[line] || "#555"
   }
 })

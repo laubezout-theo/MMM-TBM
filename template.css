@@ -1,3 +1,49 @@
-.MMM-Template div {
-    color: purple;
+.station-block {
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.station-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.departure-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.line-badge {
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  text-transform: uppercase;
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+.square {
+  border-radius: 4px;
+}
+
+.terminus {
+  flex: 1;
+  font-size: 13px;
+}
+
+.time {
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: 8px;
 }
