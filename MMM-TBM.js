@@ -50,7 +50,6 @@ Module.register("MMM-TBM", {
 
     let html = ""
 
-    // Mélanger les départs dans l'ordre croissant de temps
     data.forEach((dep) => {
       const isTram = dep.line.toLowerCase().includes("tram")
       let lineLabel
@@ -58,7 +57,6 @@ Module.register("MMM-TBM", {
       if (isTram) {
         lineLabel = dep.line.replace(/tram\s*/i, "").trim() // ex: "Tram C" → "C"
       } else {
-        // Si c'est un bus, traiter les cas spécifiques
         if (dep.line.toLowerCase() === "bus express g") {
           lineLabel = "G" // Retourner uniquement "G" pour le bus express G
         } else {
@@ -68,8 +66,17 @@ Module.register("MMM-TBM", {
 
       const color = this.getLineColor(lineLabel, isTram)
 
+      // Calcul du temps restant
+      const currentTime = new Date().getTime()
+      const arrivalTime = new Date(dep.time).getTime()
+      const timeDiffMinutes = Math.floor((arrivalTime - currentTime) / 1000 / 60)
+
+      const timeHtml = timeDiffMinutes < 1
+        ? "<span class=\"text-red\">Approche</span>"
+        : `<span>${timeDiffMinutes} min</span>`
+
       const lineHtml = `<span class="line-badge ${isTram ? "circle" : "square"}" style="background-color:${color}">${lineLabel}</span>`
-      html += `<div class="departure-line">${lineHtml}<span class="terminus">${dep.terminus}</span><span class="time">${dep.arrival_time}</span></div>`
+      html += `<div class="departure-line">${lineHtml}<span class="terminus">${dep.terminus}</span><span class="time"><span class="clock-icon">🕒</span>${timeHtml}</span></div>`
     })
 
     return html
