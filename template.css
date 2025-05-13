@@ -68,7 +68,11 @@
   font-size: 1.2em;
 }
 
-.bike-count, .dock-count {
-  display: block;
-  margin-top: 4px;
+.bike-count, .dock-count, .ebike-count, .distance {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.text-red {
+  color: #ff4d4d;
 }
