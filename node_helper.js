@@ -35,7 +35,7 @@ module.exports = NodeHelper.create({
     }
     const sorted = allDepartures.sort((a, b) => a.time - b.time)
     const limited = sorted.slice(0, max_per_station * station_ids.length)
-    this.sendSocketNotification("TBM_DATA", { identifier, station_ids, departures: limited }) // Envoi des données à l'instance correspondante
+    this.sendSocketNotification(`TBM_DATA_${identifier}`, { identifier, station_ids, departures: limited }) // Envoi des données à l'instance correspondante
   },
 
   async handleCityBikeData({ station_ids, key_token, distances }, identifier) {
@@ -58,7 +58,7 @@ module.exports = NodeHelper.create({
         }
       })
 
-      this.sendSocketNotification("CITYBIKE_DATA", { identifier, station_ids, stations }) // Envoi des données à l'instance correspondante
+      this.sendSocketNotification(`CITYBIKE_DATA_${identifier}`, { identifier, station_ids, stations }) // Envoi des données à l'instance correspondante
     } catch (err) {
       console.error("Erreur API vélos ville :", err.message || err)
     }

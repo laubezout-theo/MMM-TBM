@@ -42,10 +42,13 @@ Module.register("MMM-TBM", {
   },
 
   socketNotificationReceived(notification, payload) {
-    if (notification === "TBM_DATA" && this.config.station_type === "transport") {
+    const expectedNotif = `TBM_DATA_${this.identifier}`
+    const expectedCityBikeNotif = `CITYBIKE_DATA_${this.identifier}`
+
+    if (notification === expectedNotif && this.config.station_type === "transport") {
       this.instancesData[this.identifier].templateContent = this.formatTBMData(payload.departures, this.config.station_ids)
       this.updateDom()
-    } else if (notification === "CITYBIKE_DATA" && this.config.station_type === "citybike") {
+    } else if (notification === expectedCityBikeNotif && this.config.station_type === "citybike") {
       this.instancesData[this.identifier].templateContent = this.formatCityBikeData(payload.stations)
       this.updateDom()
     }
