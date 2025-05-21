@@ -23,7 +23,7 @@ module.exports = NodeHelper.create({
           const rawTime = props.hor_estime || props.hor_app || props.hor_theo
           allDepartures.push({
             station_id: id,
-            line: props.libelle || "??",
+            line: (props.libelle && props.libelle.toLowerCase() === "bus express g") ? "G" : (props.libelle || "??"),
             terminus: props.terminus || "??",
             arrival_time: this.formatTime(rawTime),
             time: new Date(rawTime)
